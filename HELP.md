@@ -1,3 +1,6 @@
+- RocketMQ Setting
+Please setup brokerIP1 with local IP not `localhost` in `broker.conf` before starting the docker
+
 - Create Notification
 ```
 curl --location 'localhost:8080/notifications' \
