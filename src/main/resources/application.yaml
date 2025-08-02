@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: demo
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/taskdb
+    username: taskuser
+    password: taskpass
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  redis:
+    host: localhost
+    port: 6379
+
+rocketmq:
+  name-server: localhost:9876
+  producer:
+   group: notification-producer-group
+   send-message-timeout: 10000
