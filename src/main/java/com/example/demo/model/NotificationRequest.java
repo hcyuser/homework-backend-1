@@ -6,6 +6,14 @@ public class NotificationRequest {
 	private String subject;
 	private String content;
 
+	public NotificationRequest(String type, String recipient, String subject, String content) {
+		super();
+		this.type = type;
+		this.recipient = recipient;
+		this.subject = subject;
+		this.content = content;
+	}
+
 	public String getType() {
 		return type;
 	}
