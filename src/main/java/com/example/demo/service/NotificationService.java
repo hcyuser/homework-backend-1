@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
@@ -23,6 +24,7 @@ public class NotificationService {
 	private final RocketMQTemplate rocketMQTemplate;
 	private final String REDIS_RECENT_NOTIFICATION_LIST = "recent_notifications";
 	private final String ROCKET_MQ_TOPIC = "notification-topic";
+	private final List<String> notificationType  = Arrays.asList("email", "sms");
 
 	public NotificationService(NotificationRepository repository, RedisTemplate<String, Notification> redisTemplate,
 			RocketMQTemplate rocketMQTemplate) {
@@ -33,7 +35,13 @@ public class NotificationService {
 
 	public Notification create(NotificationRequest request) {
 		Notification n = new Notification();
-		n.setType(request.getType());
+
+		if(notificationType.contains(request.getType())) {
+			n.setType(request.getType());
+		}else{
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+		}
+		
 		n.setRecipient(request.getRecipient());
 		n.setSubject(request.getSubject());
 		n.setContent(request.getContent());
