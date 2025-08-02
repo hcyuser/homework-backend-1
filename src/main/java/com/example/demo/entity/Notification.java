@@ -70,7 +70,7 @@ public class Notification {
 		String isoDateTime = createdAt.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 		this.createdAt = isoDateTime;
 	}
-	
+
 	public void setCreatedAt(String createdAt) {
 		this.createdAt = createdAt;
 	}

@@ -13,12 +13,12 @@ import com.example.demo.entity.Notification;
 @Configuration
 @EnableCaching
 public class RedisConfig {
-    @Bean
-    public RedisTemplate<String, Notification> redisTemplate(RedisConnectionFactory factory) {
-        RedisTemplate<String, Notification> template = new RedisTemplate<>();
-        template.setConnectionFactory(factory);
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new Jackson2JsonRedisSerializer<>(Notification.class));
-        return template;
-    }
+	@Bean
+	public RedisTemplate<String, Notification> redisTemplate(RedisConnectionFactory factory) {
+		RedisTemplate<String, Notification> template = new RedisTemplate<>();
+		template.setConnectionFactory(factory);
+		template.setKeySerializer(new StringRedisSerializer());
+		template.setValueSerializer(new Jackson2JsonRedisSerializer<>(Notification.class));
+		return template;
+	}
 }
