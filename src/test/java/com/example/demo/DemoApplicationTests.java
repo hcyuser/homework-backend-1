@@ -59,7 +59,7 @@ class DemoApplicationTests {
 	}
 
 	@Test
-	void testGetById_whenExists() {
+	void testGetById_whenExistsNoCache() {
 		Notification n = new Notification();
 		n.setType("sms");
 		n.setRecipient("123456789");
@@ -79,6 +79,40 @@ class DemoApplicationTests {
 		ResponseEntity<Notification> response = restTemplate.getForEntity(baseUrl + "/" + 0, Notification.class);
 
 		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+	}
+	
+	@Test
+	void testGetRecentNotifications() {
+	    // Create 3 sample notifications
+	    for (int i = 1; i <= 3; i++) {
+	        NotificationRequest request = new NotificationRequest(
+	            "email",
+	            "user" + i + "@example.com",
+	            "Subject " + i,
+	            "Content " + i
+	        );
+
+	        ResponseEntity<Notification> response = restTemplate.postForEntity(baseUrl, request, Notification.class);
+	        assertEquals(HttpStatus.OK, response.getStatusCode());
+	    }
+
+	    // Call /notifications/recent
+	    ResponseEntity<Notification[]> response = restTemplate.getForEntity(
+	        baseUrl + "/recent",
+	        Notification[].class
+	    );
+
+	    assertEquals(HttpStatus.OK, response.getStatusCode());
+	    Notification[] recent = response.getBody();
+
+	    assertNotNull(recent);
+	    assertTrue(recent.length <= 10); // Should not exceed 10
+	    assertTrue(recent.length >= 3); // We created at least 3
+
+	    // Check contents of at least one
+	    Notification first = recent[0];
+	    assertNotNull(first.getRecipient());
+	    assertNotNull(first.getSubject());
 	}
 
 	@Test

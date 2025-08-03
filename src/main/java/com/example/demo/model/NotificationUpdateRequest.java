@@ -2,7 +2,6 @@ package com.example.demo.model;
 
 public class NotificationUpdateRequest {
 	public NotificationUpdateRequest(String subject, String content) {
-		super();
 		this.subject = subject;
 		this.content = content;
 	}
