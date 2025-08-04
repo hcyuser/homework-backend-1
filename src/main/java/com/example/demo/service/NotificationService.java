@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.UUID;
 
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.redisson.api.RLock;
@@ -42,25 +43,28 @@ public class NotificationService {
 	}
 
 	public Notification create(NotificationRequest request) {
-		Notification n = new Notification();
 
 		if (!notificationType.contains(request.getType())) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 		}
+		
+		 String uuidAsString = UUID.randomUUID().toString();
 
-		n.setType(request.getType());
-		n.setRecipient(request.getRecipient());
-		n.setSubject(request.getSubject());
-		n.setContent(request.getContent());
-		n.setCreatedAt(LocalDateTime.now());
-
-		// Save to MySQL
-		Notification saved = repository.save(n);
-
-		RLock lock = redissonClient.getLock(REDIS_NOTIFICATION_LOCK_PREFIX + saved.getId());
+		RLock lock = redissonClient.getLock(REDIS_NOTIFICATION_LOCK_PREFIX + uuidAsString);
 		try {
 			// Lease Time: 10s
 			lock.lock(10, TimeUnit.SECONDS);
+			
+			Notification n = new Notification();
+
+			n.setType(request.getType());
+			n.setRecipient(request.getRecipient());
+			n.setSubject(request.getSubject());
+			n.setContent(request.getContent());
+			n.setCreatedAt(LocalDateTime.now());
+
+			// Save to MySQL
+			Notification saved = repository.save(n);
 
 			// Send to RocketMQ
 			rocketMQTemplate.convertAndSend(ROCKET_MQ_TOPIC, saved);
